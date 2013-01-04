@@ -151,7 +151,7 @@ def ask_user_confirmation(prompt):
 
 def check_path_exists(path, flag_verbose = False):
     """
-    Check if a folder or file exists
+    Check if a folder or file exists, Returns True or False
     """
     verbose("\nHBfunctions/check_folder_exists(): " + path, flag_verbose)
 

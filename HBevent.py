@@ -181,7 +181,7 @@ class event(DC.ClassTools):
         HBFun.verbose("HBevent/make_new_properties_list()", verbose)
     
         # get the list with photos
-        source_list = os.listdir(self.source_path + self.event_dir)
+        source_list = os.listdir(self.source_path + self.event_dir_src)
         source_list = [n for n in source_list if n[-4:] == ".jpg"]    
     
         prop_fn = "props"

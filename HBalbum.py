@@ -130,9 +130,8 @@ class album(DC.ClassTools):
         if event_dir_src == "":
             event_dir_src = event_dir
         else:
-            event_dir_src = HBFun.check_and_make_folder(event_dir_src, verbose)
+            event_dir_src = HBFun.check_path(event_dir_src, verbose)
         
-
         # check if the event already exists. If not, make it
         if self.check_event_exists(event_title, event_dir, verbose):
             ev = HBEv.event(event_title, event_dir, event_dir_src, self.album_title, self.album_path, source_path, self.pics_dir, self.thumbs_dir, self.resources_dir, self.html_dir, verbose)
@@ -223,7 +222,7 @@ class album(DC.ClassTools):
         self.event_array[index].add_and_resize_thumbs(flag_redo_thumbs, verbose)
         self.event_array[index].add_photos_to_array(verbose)
         
-        if flag_new_properties_list:
+        if HBFun.check_path_exists(self.album_path + self.resources_dir + self.event_array[index].event_dir) or flag_new_properties_list:
             self.event_array[index].make_new_properties_list(verbose)
             
         self.event_array[index].read_properties_list(verbose)
