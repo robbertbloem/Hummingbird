@@ -28,8 +28,14 @@ def init_new_album():
         default_source_path = default_source_path,
         verbose = True)
     
-    if HBFUN.ask_user_confirmation("This will overwrite the old pickle. Destroy it? y/n"):
+    if HBFUN.check_path_exists(pickle_path):
+        if HBFUN.ask_user_confirmation("This will overwrite the old pickle. Destroy it? y/n"):
+            HBAL.save_album(album, pickle_path)
+    else:
         HBAL.save_album(album, pickle_path)
+
+
+
 
 def fill_album():
     print("\nFill album")
@@ -57,9 +63,6 @@ def add_event():
     
     album = HBAL.load_album(pickle_path)  
     index = 4
-    # event_title = "Lausanne"
-    # event_dir = "20100607_lausanne/"
-    # event_dir_src = "20100607_lausanne/"
     event_title = "Party Alexander (May 2011)"
     event_dir = "20110508_party_alex/"
     event_dir_src = "20110508a_party_alexander/"
