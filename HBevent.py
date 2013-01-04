@@ -13,8 +13,35 @@ import Hummingbird.HBfunctions as HBFUN
 import Hummingbird.HBphoto as HBPh
 
 class event(DC.ClassTools):
+    """
+    class event 
+    
+    20130103/RB: started the class
+    
+    The event-dependent stuff
+    
 
-    def __init__(self, event_title, event_dir, event_dir_src, album_title, album_path, source_path, pics_dir, thumbs_dir, resources_dir, html_dir, verbose):
+    """
+
+
+    def __init__(self, event_title, event_dir, event_dir_src, album_title, album_path, source_path, pics_dir, thumbs_dir, resources_dir, html_dir, verbose = False):
+        
+        """
+        __init__: start a new event
+        
+        20130103: started the function
+        
+        INPUT:
+        - event_title (str): title of the event
+        - event_dir (str): the directory name of the event on the web
+        - event_dir_src (str): the directory name of the event on the computer
+        - source_path (str): source path, where the photos can be found
+        - album_title, album_path, pics_dir, thumbs_dir, resources_dir, html_dir
+        
+        OUTPUT:
+        - True 
+        
+        """
 
         HBFUN.verbose("HBevent/__init__: " + event_title + ", " + event_dir + ", " + album_title + " etc.", verbose)
 
@@ -46,7 +73,12 @@ class event(DC.ClassTools):
 
     def make_folders(self, verbose = False):
         """
-        Create the web-folders
+        make_folders: create the event specific folders
+        
+        20130103/RB: started the function
+        
+        To clean up __init__
+        
         """
         HBFUN.verbose("\nHBevent/make_folders()", verbose)
         
@@ -68,6 +100,20 @@ class event(DC.ClassTools):
 
         
     def add_and_resize_photos(self, flag_redo_resize = False, verbose = False):
+        """
+        add_and_resize_photos: copy photos from the source, resize and put them in web folder
+        
+        20130103/RB: started the function
+        
+        INPUT:
+        - flag_redo_resize (BOOL, False): the photos are copied from the source, resize and put in the destination folder. During this, the exif information is copied to the resized photos.
+            - no photos found in destination: will always resize them
+            - photos are found, flag is False: will not do anything
+            - photos are found, flag is True: will resize the photos
+            
+        REMARKS:
+        The function reads the photos in the source and destination folder into two arrays. It compares the arrays and removes the ones that have already been resized (unless flag_redo_resize = True).   
+        """
         
         HBFUN.verbose("\nHBevent/add_and_resize_photos(): redo resize? " + str(flag_redo_resize), verbose)
         
@@ -88,11 +134,20 @@ class event(DC.ClassTools):
         src_path = self.source_path + self.event_dir_src
         dest_path = self.album_path + self.pics_dir + self.event_dir
 
+        # actually resize the photos
         HBFUN.resize_pics(src_path, dest_path, source_to_pics_list, self.max_pic_size, verbose)
 
 
     def add_and_resize_thumbs(self, flag_redo_thumbs = False, verbose = False):
+        """
+        add_and_resize_thumbs: copy photos from the source, resize and put them in web folder
         
+        20130103/RB: started the function
+        
+        See for details add_and_resize_photos. 
+        
+        """
+     
         HBFUN.verbose("\nHBevent/add_and_resize_thumbs(): redo resize? " + str(flag_redo_thumbs), verbose)
         
         # compare the contents of the folders. No need to do double work!
@@ -112,14 +167,19 @@ class event(DC.ClassTools):
         src_path = self.source_path + self.event_dir_src
         dest_path = self.album_path + self.thumbs_dir + self.event_dir
     
-
+        # actually resize the thumbs
         HBFUN.make_thumbs(src_path, dest_path, source_to_pics_list, self.thumb_size, verbose)
 
 
 
     def get_photo_filename_from_photo_array(self):  
         """
-        Will return the filenames of the photos in the array.
+        get_photo_filename_from_photo_array
+        
+        20130103/RB: started the function
+        
+        Will read the filenames of the photos in the photo_array
+        
         """
         photo_array_fn = []
         for item in self.photo_array:
@@ -130,10 +190,13 @@ class event(DC.ClassTools):
 
 
     def add_photos_to_array(self, verbose = False): 
-        
-
+    
         """
-        Add photos to photo_array. It will check if they are already in there. If there are changes, it will return True, if there are no changes, it will return False.
+        add_photos_to_array: actually add photos to the photo_array
+        
+        20130103/RB: started the function
+        
+        If the photos are already in the array, it will skip them. 
         """
         
         HBFUN.verbose("HBevent/add_photos_to_array()", verbose)
@@ -162,8 +225,14 @@ class event(DC.ClassTools):
         
         return True
 
+
+
     def list_photos(self):
+        """
+        list_photos: prints a list with all events in the album. Disabled events and photos are marked with a 'D'
         
+        20130103/RB: started the function
+        """        
         for i in range(len(self.photo_array)):
             
             if self.photo_array[i].disabled:
@@ -177,7 +246,13 @@ class event(DC.ClassTools):
 
     def make_new_properties_list(self, verbose = False):
         """
-        Make a csv-file that can be used to give photos titles and captions.
+        make_new_properties_list: write a new csv file where you can assign title and captions to photos
+        
+        20130103/RB: started the function
+        
+        The property list can be found in 'album_path + resources_dir + event_dir + 'props.csv''.
+        
+        To prevent overwriting old files with all captions, new files will always have a number appended. You have to manually change it to 'props.csv', as this file is used.
         """
     
         HBFUN.verbose("HBevent/make_new_properties_list()", verbose)
@@ -186,12 +261,13 @@ class event(DC.ClassTools):
         source_list = os.listdir(self.source_path + self.event_dir_src)
         source_list = [n for n in source_list if n[-4:] == ".jpg"]    
     
+        # create a save filename
         prop_fn = "props"
         prop_ext = "txt"
         path_and_filename = HBFUN.file_numbering(self.album_path + self.resources_dir + self.event_dir, prop_fn, prop_ext)
     
+        # write the properties
         csvfile = open(path_and_filename, "wb")
-        
         csvwriter = csv.writer(csvfile, delimiter = ";")
         for i in range(len(source_list)):
             csvwriter.writerow([source_list[i], "  ", "  "])
@@ -200,7 +276,11 @@ class event(DC.ClassTools):
     
     def read_properties_list(self, verbose = False):
         """
-        Read the csv-file with titles and captions and set the values of the photo-objects.
+        read_properties_list: read the csv properties list and write the titles and captions to the photo objects
+        
+        20130103/RB: started the function
+        
+        
         """
         
         HBFUN.verbose("HBevent/read_properties_list()", verbose)

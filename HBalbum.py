@@ -28,17 +28,24 @@ class album(DC.ClassTools):
     
     The highest class with specific photo stuff in it. ClassTools just prints the class nicely.
     
-    INPUT:
-    - album_title (str): title used for the site
-    - album_path (str): the path with all the resized photos etc
-    - default_source_path (str): the default path to the original photos
-    
-    OUTPUT:
-    - True 
-    
     """
 
     def __init__(self, album_title, album_path, default_source_path, verbose = False):
+        """
+        __init__: start an album
+        
+        20130103/RB: started the function
+        
+        INPUT:
+        - album_title (str): title used for the site
+        - album_path (str): the path with all the resized photos etc
+        - default_source_path (str): the default path to the original photos
+        
+        OUTPUT:
+        - True 
+        """
+        
+        
         HBFUN.verbose("\nalbum/__init__", verbose)
 
         self.album_title = album_title  # name of the album
@@ -339,11 +346,11 @@ class album(DC.ClassTools):
             - photos are found, flag is True: will resize the photos
         - flag_redo_thumbs (BOOL, False): similar to flag_redo_resize, but for the thumbnails.
         
+        REMARK:
+        This function is a convenient collection of steps. Error checking etc should be done in the respective functions.
         
         """
-        
-        
-        
+
         HBFUN.verbose("\nHBalbum/add_photos(): redo resize: " + str(flag_redo_resize), verbose)
         
         self.event_array[index].add_and_resize_photos(flag_redo_resize, verbose)
