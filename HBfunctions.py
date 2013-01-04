@@ -32,8 +32,8 @@ def file_numbering(path, filename, extension):
     
     if filename[-1] == ".":
         filename = filename[:-1]
-    if extension[0] = ".":
-        extenstion = extension[1:]
+    if extension[0] == ".":
+        extension = extension[1:]
 
 
     if os.access(path + filename + "." + extension, os.F_OK):

@@ -29,7 +29,7 @@ class event(DC.ClassTools):
         """
         __init__: start a new event
         
-        20130103: started the function
+        20130103/RB: started the function
         
         INPUT:
         - event_title (str): title of the event
