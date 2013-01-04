@@ -14,6 +14,27 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 def file_numbering(path, filename, extension):
+    """
+    file_numbering: produces a unique filename
+    
+    20130103: started the function
+    
+    INPUT:
+    - path (str): path
+    - filename (str): filename
+    - extension (str): extension
+    Note that filename should not end with a period, while the extenstion should not start with one.
+    
+    OUTPUT:
+    - a unique path_and_filename
+    
+    """
+    
+    if filename[-1] == ".":
+        filename = filename[:-1]
+    if extension[0] = ".":
+        extenstion = extension[1:]
+
 
     if os.access(path + filename + "." + extension, os.F_OK):
         i = 1
@@ -29,6 +50,18 @@ def file_numbering(path, filename, extension):
 
 
 def get_exif(filename):
+    """
+    get_exif: read the exif data
+    
+    20130103: copied the function... from StackOverflow?
+    
+    INPUT:
+    - filename (str)
+    
+    OUTPUT:
+    - dictionary with exif data
+    
+    """
     ret = {}
     img = PIL.Image.open(filename)
     info = img._getexif()
@@ -43,7 +76,20 @@ def get_exif(filename):
 
 
 def make_jpg_html(name):
-    return name[:-3] + "html"
+    """
+    make_jpg_html: converts 'photo.jpg' to 'photo.html'
+    
+    20130102: started the function
+    
+    """
+    
+    if name[-4:] == "jpeg":
+        return name[:-4] + "html"
+    elif name[-3:] == "jpg":
+        return name[:-3] + "html"
+    else: 
+        printError("Extension is not 'jpg' or 'jpeg'", inspect.stack())
+        return False
 
 
 
@@ -54,6 +100,26 @@ def resize_pics(source_path,
     source_to_pics_list, 
     max_pic_size,
     flag_verbose = False):
+    
+    """
+    resize_pics: read photo from source, copy and resize it to destination
+    
+    20130103: started the function
+
+    INPUT:
+    - source_path (str): complete path of the original photos
+    - dest_path (str): complete path of the destination of the photos
+    - source_to_pics_list (list): array with a list of filenames
+    - max_pic_size (int): maximum size of the photos
+        - it will use the long edge
+        - photos that are smaller will not be resized.
+    
+    REMARK:
+    The exif data is copied from the source to destination file (strictly speaking, this means the exif data of the size is incorrect). This is done independently from reading the exif-data that is used in the photo-object.
+    
+    """
+    
+    verbose("HBfunctions.resize_pics(): from " + source_path + " to " + dest_path, flag_verbose)
     
     for FILE in source_to_pics_list:
         
@@ -81,6 +147,7 @@ def resize_pics(source_path,
         # save the result
         img.save(dest_file)
 
+        # copy the exif data
         os.system("exiftool -tagsFromFile " + source_file + " " + dest_file + " -overwrite_original")
 
     return True
@@ -92,7 +159,17 @@ def make_thumbs(source_path,
     source_to_thumbs_list, 
     thumb_size,
     flag_verbose = False): 
-      
+    
+    """
+    make_thumbs: crop, resize and copy photos to use as thumbnails.
+    
+    20130103: started the function
+    
+    For details on input, see 'resize_pics'. This function will first determine the short edge. It will then create a box of size short_edge x short_edge, centered in the long_edge. This is cropped and then resized to thumb_size.
+    
+    """
+    
+    
     for FILE in source_to_thumbs_list:
         
         source_file = source_path + FILE
@@ -109,11 +186,13 @@ def make_thumbs(source_path,
             box = (int(w/2 - h/2), 0, int(w/2 + h/2), h)
         else:
             box = (0, int(h/2 - w/2), w, int(w/2 + h/2))            
-            
+        
+        # crop and resize  
         img = img.crop(box).resize((thumb_size, thumb_size), Image.ANTIALIAS)
     
         img.save(dest_file)
 
+        # copy exif data
         os.system("exiftool -tagsFromFile " + source_file + " " + dest_file + " -overwrite_original")
      
     return True
@@ -127,7 +206,18 @@ def make_thumbs(source_path,
 
 def ask_user_confirmation(prompt):
     """
-    Ask the user a prompt, which can be answered with Y, y, yes, N, n or no. Otherwise the prompt will be shown again. If the answer is yes, it will return True, otherwise False.
+    ask_user_confirmation: for a prompt, ask for yes or no reply
+    
+    20130103: started the function
+    
+    INPUT:
+    - prompt (str): question, like 'This will destroy the universe. y/n?'
+    
+    INTERACTION:
+    - The user should answer with Y, y, yes, N, n or no. Otherwise the prompt will be shown again. 
+    
+    OUTPUT:
+    If the answer is yes, it will return True, otherwise False.
     """
     
     while True:
@@ -151,8 +241,18 @@ def ask_user_confirmation(prompt):
 
 def check_path_exists(path, flag_verbose = False):
     """
-    Check if a folder or file exists, Returns True or False
+    check_path_exists: does 'path' exist? 
+    
+    20130103: started the function
+
+    INPUT:
+    - path (str): a path. The path can be a foldername or a filename.
+    
+    OUTPUT:
+    - True if the path exists, False if it doesn't
+ 
     """
+    
     verbose("\nHBfunctions/check_folder_exists(): " + path, flag_verbose)
 
     res = os.access(path, os.F_OK)
@@ -169,6 +269,15 @@ def check_path_exists(path, flag_verbose = False):
 
 
 def check_and_make_folder(path, flag_verbose = False):
+    """
+    check_and_make_folder: check if a folder exists, if not, create it
+    
+    20130103: started the function
+    
+    INPUT:
+    - path (str)
+    
+    """
     
     verbose("\nHBfunctions/check_and_make_folder(): " + path, flag_verbose)
     
@@ -183,7 +292,10 @@ def check_and_make_folder(path, flag_verbose = False):
 
 def check_path(path, flag_verbose = False):
     """
-    Convention is that a foldername always ends in a slash and never begins with one. This function checks if a foldername or path ends in a slash. Exception is when the path is root, then it does start with a slash.
+    check_path: Convention is that a foldername always ends in a slash and never begins with one. This function checks if a foldername or path ends in a slash. Exception is when the path is root, then it does start with a slash.
+    
+    20130103: started the function
+    
     """
     verbose("\nHBfunctions/check_path(): " + path, flag_verbose)
     # check at beginning
@@ -199,6 +311,17 @@ def check_path(path, flag_verbose = False):
         
  
 def printError(string, location = []):
+    """
+    printError: print an error in red.
+    
+    20130103: copied the function from croc
+    
+    INPUT:
+    - string (str): an error message
+    - location (inspect.stack(), opt): makes tracing the location of the error easier.
+    
+    """
+    
     if location == []:
         print("\033[1;31mERROR: " + string + "\033[1;m")
     else:
@@ -206,12 +329,39 @@ def printError(string, location = []):
 
 
 def printWarning(string, location = []):
+    """
+    printWarning: print a warning in purple.
+    
+    20130103: copied the function from croc
+    
+    INPUT:
+    - string (str): a warning message
+    - location (inspect.stack(), opt): makes tracing the location of the warning easier.
+    
+    """
+    
     if location == []:
         print("\033[1;35mWARNING: " + string + "\033[1;m")
     else:
         print("\033[1;35mWARNING (" + location[0][1] + "): " + string + "\033[1;m")
 
+
+
 def verbose(string, flag_verbose):
+    """
+    verbose: talk about the progress, in blue
+    
+    20130103: started the function
+    
+    INPUT:
+    - string (str): a message
+    - flag_verbose (BOOL): if False, don't print anything.
+
+    REMARK:
+    I was tired if all if-statements in the code, so I moved it in here.
+
+    """
+    
     if flag_verbose:
         print("\033[1;34m" + string + "\033[1;m")
 
