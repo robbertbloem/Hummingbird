@@ -1,6 +1,7 @@
 from __future__ import print_function
 from __future__ import division
 
+import inspect
 import os
 
 import numpy
@@ -12,7 +13,7 @@ import Hummingbird.DataClasses as DC
 import Hummingbird.HBalbum as HBAL
 import Hummingbird.HBevent as HBEV
 import Hummingbird.HBphoto as HBPH
-
+import Hummingbird.HBfunctions as HBFUN
 
 def make_html(album, verbose = False):
 
@@ -20,7 +21,7 @@ def make_html(album, verbose = False):
 
     # make album
     f = open(album.album_path + album.html_dir + "index.html", "wb")
-    make_html_header(f)
+    make_html_header(f, album.album_title)
     make_html_navigation(f, album.album_title)
     gallery = prepare_album_gallery(album)
     make_html_gallery(f, gallery)
@@ -29,46 +30,55 @@ def make_html(album, verbose = False):
 
     # make event pages
     for i in range(len(album.event_array)):
-
+        
         event = album.event_array[i]
-
-        f = open(album.album_path + album.html_dir + event.event_dir + "index.html", "wb")
-        make_html_header(f, css_path = "../") 
-        if i == 0:
-            prev_nav = no_nav
+        
+        if len(event.photo_array) == 0:
+            HBFUN.printWarning(event.event_title + " does not contain any photos and will be skipped!", inspect.stack())    
+        
         else:
-            prev_nav = "../" + album.event_array[i-1].event_dir + "index.html"
-        if i == len(album.event_array) - 1:
-            next_nav = no_nav
-        else:
-            next_nav = "../" + album.event_array[i+1].event_dir + "index.html"        
-        up_nav = "../index.html"
-        make_html_navigation(f, event.event_title, prev_nav, up_nav, next_nav)
-        gallery = prepare_event_gallery(event)
-        make_html_gallery(f, gallery)
-        make_html_footer(f)
-        f.close()   
-
-
-        # make photo pages
-        for j in range(len(event.photo_array)):
-
-            photo = event.photo_array[j]  
-            f = open(album.album_path + album.html_dir + event.event_dir + photo.photo_html_name, "wb")      
-            make_html_header(f, css_path = "../")
-            if j == 0:
+            f = open(album.album_path + album.html_dir + event.event_dir + "index.html", "wb")
+            page_title = album.album_title + " - " + event.event_title
+            make_html_header(f, page_title, css_path = "../") 
+            if i == 0:
                 prev_nav = no_nav
             else:
-                prev_nav = event.photo_array[j-1].photo_html_name
-            if j == len(event.photo_array) - 1:
+                prev_nav = "../" + album.event_array[i-1].event_dir + "index.html"
+            if i == len(album.event_array) - 1:
                 next_nav = no_nav
             else:
-                next_nav = event.photo_array[j+1].photo_html_name
-            up_nav = "index.html"
+                next_nav = "../" + album.event_array[i+1].event_dir + "index.html"        
+            up_nav = "../index.html"
             make_html_navigation(f, event.event_title, prev_nav, up_nav, next_nav)
-            make_photo_html(f, photo)
+            gallery = prepare_event_gallery(event)
+            make_html_gallery(f, gallery)
             make_html_footer(f)
-            f.close()  
+            f.close()   
+    
+    
+            # make photo pages
+            for j in range(len(event.photo_array)):
+    
+                photo = event.photo_array[j]  
+                f = open(album.album_path + album.html_dir + event.event_dir + photo.photo_html_name, "wb")      
+                page_title = album.album_title + " - " + event.event_title 
+                if photo.photo_title:
+                    page_title += " - " + photo.photo_title
+                
+                make_html_header(f, page_title, css_path = "../")
+                if j == 0:
+                    prev_nav = no_nav
+                else:
+                    prev_nav = event.photo_array[j-1].photo_html_name
+                if j == len(event.photo_array) - 1:
+                    next_nav = no_nav
+                else:
+                    next_nav = event.photo_array[j+1].photo_html_name
+                up_nav = "index.html"
+                make_html_navigation(f, event.event_title, prev_nav, up_nav, next_nav)
+                make_photo_html(f, photo)
+                make_html_footer(f)
+                f.close()  
 
 
 def make_photo_html(f, photo):
@@ -135,10 +145,11 @@ def parse_exif(exif):
 
 
 
-def make_html_header(f, css_path = ""):
+def make_html_header(f, title, css_path = ""):
 
     f.write("<!DOCTYPE html>\n")
     f.write("<head>\n")
+    f.write("<title>" + title + "</title>")
     f.write('<link rel="stylesheet" href="' + css_path + 'style.css">\n')
     f.write("</head>\n")
     f.write("<body>\n")
