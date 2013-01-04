@@ -1,0 +1,9 @@
+Python:
+- reading in csv data with titles of pics assumes order did not change
+- make possible to change order of photos and albums
+- if there is no property list, it should make a new one, the flag should indicate if you can overwrite it.
+
+
+
+HTML/CSS:
+- nav buttons should not move when a button is missing
