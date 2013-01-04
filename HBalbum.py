@@ -110,7 +110,7 @@ class album(DC.ClassTools):
         return True      
     
 
-    def add_event(self, index, event_title, event_dir, source_path = "", verbose = False):
+    def add_event(self, index, event_title, event_dir, event_dir_src = "", source_path = "", verbose = False):
         
         HBFun.verbose("HBalbum/add_event(): " + str(index) + ", " + event_title + ", " + event_dir + ", " + source_path, verbose)
         
@@ -126,10 +126,16 @@ class album(DC.ClassTools):
         
         # check the event_dir
         event_dir = HBFun.check_path(event_dir)
+        
+        if event_dir_src == "":
+            event_dir_src = event_dir
+        else:
+            event_dir_src = HBFun.check_and_make_folder(event_dir_src, verbose)
+        
 
         # check if the event already exists. If not, make it
         if self.check_event_exists(event_title, event_dir, verbose):
-            ev = HBEv.event(event_title, event_dir, self.album_title, self.album_path, source_path, self.pics_dir, self.thumbs_dir, self.resources_dir, self.html_dir, verbose)
+            ev = HBEv.event(event_title, event_dir, event_dir_src, self.album_title, self.album_path, source_path, self.pics_dir, self.thumbs_dir, self.resources_dir, self.html_dir, verbose)
             self.event_array.insert(index, ev)
         
         return True

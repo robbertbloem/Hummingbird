@@ -14,7 +14,7 @@ import Hummingbird.HBphoto as HBPh
 
 class event(DC.ClassTools):
 
-    def __init__(self, event_title, event_dir, album_title, album_path, source_path, pics_dir, thumbs_dir, resources_dir, html_dir, verbose):
+    def __init__(self, event_title, event_dir, event_dir_src, album_title, album_path, source_path, pics_dir, thumbs_dir, resources_dir, html_dir, verbose):
 
         HBFun.verbose("HBevent/__init__: " + event_title + ", " + event_dir + ", " + album_title + " etc.", verbose)
 
@@ -30,7 +30,7 @@ class event(DC.ClassTools):
         # own   
         self.event_title = event_title
         self.event_dir = event_dir      # correctness already checked by album
-        # self.event_dir_src = event_dir_src  # source of the pics
+        self.event_dir_src = event_dir_src  # source of the pics
 
         self.disabled = False           # disable but not delete event
         
@@ -72,7 +72,7 @@ class event(DC.ClassTools):
         HBFun.verbose("\nHBevent/add_and_resize_photos(): redo resize? " + str(flag_redo_resize), verbose)
         
         # compare the contents of the folders. No need to do double work!
-        source_list = os.listdir(self.source_path + self.event_dir)
+        source_list = os.listdir(self.source_path + self.event_dir_src)
         pics_list = os.listdir(self.album_path + self.pics_dir + self.event_dir)
         
         # clean up the source list from non-jpgs
@@ -85,7 +85,7 @@ class event(DC.ClassTools):
             source_to_pics_list = [n for n in source_list if n not in pics_list]
             HBFun.verbose(str(len(source_to_pics_list)) + " of " + str(len(source_list)) + " pics will be resized", verbose)
 
-        src_path = self.source_path + self.event_dir
+        src_path = self.source_path + self.event_dir_src
         dest_path = self.album_path + self.pics_dir + self.event_dir
 
         HBFun.resize_pics(src_path, dest_path, source_to_pics_list, self.max_pic_size, verbose)
@@ -96,7 +96,7 @@ class event(DC.ClassTools):
         HBFun.verbose("\nHBevent/add_and_resize_thumbs(): redo resize? " + str(flag_redo_thumbs), verbose)
         
         # compare the contents of the folders. No need to do double work!
-        source_list = os.listdir(self.source_path + self.event_dir)
+        source_list = os.listdir(self.source_path + self.event_dir_src)
         thumbs_list = os.listdir(self.album_path + self.thumbs_dir + self.event_dir)
         
         # clean up the source list from non-jpgs
@@ -109,7 +109,7 @@ class event(DC.ClassTools):
             source_to_pics_list = [n for n in source_list if n not in thumbs_list]
             HBFun.verbose(str(len(source_to_pics_list)) + " of " + str(len(source_list)) + " thumbs will be resized", verbose)
     
-        src_path = self.source_path + self.event_dir
+        src_path = self.source_path + self.event_dir_src
         dest_path = self.album_path + self.thumbs_dir + self.event_dir
     
 
@@ -140,7 +140,7 @@ class event(DC.ClassTools):
         photo_array_fn = self.get_photo_filename_from_photo_array()
             
         # get the list with photos
-        source_list = os.listdir(self.source_path + self.event_dir)
+        source_list = os.listdir(self.source_path + self.event_dir_src)
         source_list = [n for n in source_list if n[-4:] == ".jpg"]
         
         # only add new photos to the array
@@ -152,7 +152,7 @@ class event(DC.ClassTools):
         
         for photo_filename in add_to_photo_array:
             # read the exif. this has to be done from the source
-            exif = HBFun.get_exif(self.source_path + self.event_dir + photo_filename)
+            exif = HBFun.get_exif(self.source_path + self.event_dir_src + photo_filename)
             # make a photo object
             ph = HBPh.photo(self.album_path, self.event_dir, photo_filename, exif)
             # add object to photo_array
