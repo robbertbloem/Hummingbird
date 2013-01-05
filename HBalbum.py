@@ -274,6 +274,8 @@ class album(DC.ClassTools):
         
         """
         
+        ev = ev = self.event_array[index]
+        
         if disable:
             dis = "disabled"
         else:
@@ -288,15 +290,62 @@ class album(DC.ClassTools):
         if index == -1:
             HBFUN.verbose("  all events will be set to " + dis, verbose)
             for i in range(len(self.event_array)):
-                self.event_array[i].disabled = disable
+                ev.disabled = disable
         
         else:
-            if self.event_array[index].disabled == disable:
-                HBFUN.printWarning("Event " + self.event_array[index] + " is already " + dis, inspect.stack())
+            if ev.disabled == disable:
+                HBFUN.printWarning("Event " + ev.event_title + " is already " + dis, inspect.stack())
             
-            HBFUN.verbose("  event_title: " + self.event_array[index].event_title, verbose)
-            HBFUN.verbose("  event_dir: " + self.event_array[index].event_dir, verbose)          
-            self.event_array[index].disabled = disable
+            HBFUN.verbose("  event_title: " + ev.event_title, verbose)
+            HBFUN.verbose("  event_dir: " + ev.event_dir, verbose)          
+            ev.disabled = disable
+        
+        return True
+
+
+    def disable_photo(self, event_index, photo_index, disable, verbose = False):
+        """
+        disable_photo: disable or enable an event. 
+        
+        20130103/RB: started function
+        
+        INPUT:
+        - event_index (int): index of the event in event_array. Use 'list_events' to find the correct index.
+        - disable (BOOL): True to disable, False to enable. If you try to re-disable an event, it will give a warning and continue
+        
+        OUTPUT:
+        - True: success or False: failure
+        
+        """
+        # use a bit of shorthand... sorry
+        ev = self.event_array[event_index]
+        ph = ev.photo_array[photo_index]
+        
+        if disable:
+            dis = "disabled"
+        else:
+            dis = "enabled"
+    
+        HBFUN.verbose("HBalbum/disable_photo(): event " + ev.event_title + " photo " + ph.photo_filename + " to " + dis, verbose)
+    
+        if event_index > len(self.event_array):
+            HBFUN.printError("The event index exceeds the length of the event_array", inspect.stack())
+            return False
+
+        if photo_index > len(ev.photo_array):
+            HBFUN.printError("The photo_index exceeds the length of the photo_array", inspect.stack())
+            return False
+
+           
+        if ph.disabled == disable:
+            HBFUN.printWarning("Event " + ev.event_title + " photo " + ph.photo_filename + " is already " + dis, inspect.stack())
+
+        HBFUN.verbose("  event_title: " + ev.event_title, verbose)
+        HBFUN.verbose("  event_dir: " + ev.event_dir, verbose)           
+        HBFUN.verbose("  photo_title: " + ph.photo_title, verbose)
+        HBFUN.verbose("  photo_filename: " + ph.photo_filename, verbose)  
+                
+        ph.disabled = disable
         
         return True
 

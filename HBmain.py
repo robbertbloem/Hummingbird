@@ -10,11 +10,12 @@ import Hummingbird.HBalbum as HBAL
 import Hummingbird.HBhtml as HBHTML
 import Hummingbird.HBfunctions as HBFUN
 
-reload(HBAl)
+reload(HBAL)
 
 album_path = "/Users/robbert/Pictures/Web/"
 default_source_path = "/Users/robbert/Pictures/Photos/JPG/"
 pickle_path = album_path + "web.pickle"
+
 
 
 def init_new_album():
@@ -81,9 +82,23 @@ def list_events():
 def disable_event():
     print("\nDisable event")
     
+    event_index = 2
+    disable = False
+    
     album = HBAL.load_album(pickle_path)
-    album.disable_event(index = 2, disable = True, verbose = True)
+    album.disable_event(index = event_index, disable = disable, verbose = True)
     HBAL.save_album(album, pickle_path)    
+
+def disable_photo():
+    print("\nDisable photo")
+
+    event_index = 4
+    photo_index = 4
+    disable = False
+    
+    album = HBAL.load_album(pickle_path)
+    album.disable_photo(event_index, photo_index, disable, verbose = True)
+    HBAL.save_album(album, pickle_path)  
 
 
 def add_photos():
@@ -99,7 +114,7 @@ def add_photos():
 
 def make_html():
     album = HBAL.load_album(pickle_path)
-    HBHTML.make_html(album, verbose = True)
+    HBHTML.make_html(album, verbose = False)
     
 def change_folder_thumb():
     event_index = 1
@@ -116,9 +131,10 @@ if __name__ == "__main__":
     # fill_album()
     # add_event()
     # disable_event()
+    disable_photo()
     # add_photos()
     # list_events()
     # change_folder_thumb()
-    make_html()
+    # make_html()
     
     

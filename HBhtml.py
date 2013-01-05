@@ -43,16 +43,23 @@ def make_html(album, verbose = False):
     f.close()
 
     # make event pages
-    for i in range(len(album.event_array)):
+    ev_array = range(len(album.event_array))
+    ev_array = [n for n in ev_array if album.event_array[n].disabled == False]
+        
+    for i in ev_array: #range(len(album.event_array)):
         
         event = album.event_array[i]
         
-        if len(event.photo_array) == 0:
-            HBFUN.printWarning(event.event_title + " does not contain any photos and will be skipped!", inspect.stack())    
+        # filter disabled photos
+        ph_array = range(len(event.photo_array))
+        ph_array = [n for n in ph_array if event.photo_array[n].disabled == False]
+        
+        if ph_array == []:
+            HBFUN.printWarning(event.event_title + " does not contain any photos or all photos are disabled. The event will be skipped!", inspect.stack())    
         
         else:
             
-            HBFUN.verbose("    make event: " event.event_title, verbose)
+            HBFUN.verbose("    make event: " + event.event_title, verbose)
             
             f = open(album.album_path + album.html_dir + event.event_dir + "index.html", "wb")
             
@@ -78,7 +85,7 @@ def make_html(album, verbose = False):
             f.close()   
     
             # make photo pages
-            for j in range(len(event.photo_array)):
+            for j in ph_array:
 
                 photo = event.photo_array[j]  
 
@@ -306,9 +313,12 @@ def prepare_album_gallery(album):
     20130103/RB: started the function
         
     """
-    size = len(album.event_array)
+    # filter disabled events
+    ev_array = range(len(album.event_array))
+    ev_array = [n for n in ev_array if album.event_array[n].disabled == False]
+
     gallery = []
-    for i in range(size):
+    for i in ev_array:
         link = album.event_array[i].event_dir + "index.html"
         thumb_index = album.event_array[i].event_thumb
         thumb_name= album.event_array[i].photo_array[thumb_index].photo_filename
@@ -325,9 +335,12 @@ def prepare_event_gallery(event):
     20130103/RB: started the function
     
     """
-    size = len(event.photo_array)
+    # filter disabled photos
+    ph_array = range(len(event.photo_array))
+    ph_array = [n for n in ph_array if event.photo_array[n].disabled == False]
+
     gallery = []
-    for i in range(size):
+    for i in ph_array:
         link = event.photo_array[i].photo_html_name
         thumb_path = "../../" + event.thumbs_dir + event.event_dir + event.photo_array[i].photo_filename
         title = event.photo_array[i].photo_title
