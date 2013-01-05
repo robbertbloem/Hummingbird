@@ -270,11 +270,16 @@ def make_html_footer(f):
     20130103/RB: started the function
     
     """
-    footer_text = "Copyright of site and photos: Robbert Bloem"
+    footer_text = 'Copyright of site and photos: Robbert Bloem'
+    
+    footer_links = '<a href="http://www.robbert.org">Main site</a> <a href="http://www.robbert.org/photos/album.rss">RSS-feed</a>'
 
     f.write('<div id="footer">\n')
     f.write('  <p>')
     f.write(footer_text)
+    f.write('</p>\n')
+    f.write('  <p>')
+    f.write(footer_links)
     f.write('</p>\n')
     f.write('</div>\n') # end id=footer
     f.write('</body>\n')
@@ -330,7 +335,6 @@ def make_html_gallery(f, gallery):
     if cols_left != n_cols:
         string = '<td></td>' * cols_left
         string += '</tr>\n'
-    print("  " + string)
     f.write(string)
             
             
