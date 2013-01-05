@@ -45,3 +45,4 @@ HBM.change_event_thumb(pickle_path, event_index, photo_index, verbose)
 
 # # MAKE HTML # #   
 HBM.make_html(pickle_path, verbose)
+
