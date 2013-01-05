@@ -120,7 +120,8 @@ def resize_pics(source_path,
     
     """
     
-    verbose("HBfunctions.resize_pics(): from " + source_path + " to " + dest_path, flag_verbose)
+    verbose("HBfunctions.resize_pics(): from " + source_path + " to " + dest_path, True)
+
     
     for FILE in source_to_pics_list:
         
@@ -170,6 +171,7 @@ def make_thumbs(source_path,
     
     """
     
+    verbose("HBfunctions.resize_thumbs(): from " + source_path + " to " + dest_path, True)    
     
     for FILE in source_to_thumbs_list:
         

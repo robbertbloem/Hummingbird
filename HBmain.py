@@ -107,7 +107,7 @@ def list_events(pickle_path, show_photos = False, verbose = False):
     HBFUN.verbose("List events", verbose)
     
     album = HBAL.load_album(pickle_path)    
-    album.list_events(show_photos = True)
+    album.list_events(show_photos)
     
 
     
