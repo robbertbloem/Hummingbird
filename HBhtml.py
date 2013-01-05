@@ -59,6 +59,8 @@ def make_html(album, verbose = False):
         
         else:
             
+            event.read_properties_list(verbose)
+            
             HBFUN.verbose("    make event: " + event.event_title, verbose)
             
             f = open(album.album_path + album.html_dir + event.event_dir + "index.html", "wb")

@@ -13,7 +13,7 @@ import numpy
 import matplotlib 
 import matplotlib.pyplot as plt
 
-def file_numbering(path, filename, extension):
+def file_numbering(path, filename, extension, silence = True):
     """
     file_numbering: produces a unique filename
     
@@ -40,8 +40,9 @@ def file_numbering(path, filename, extension):
         i = 1
         while os.access(path + filename + "_" + str(i) + "." + extension, os.F_OK):
             i += 1
-
-        printWarning("WARNING: props filename is numbered", inspect.stack())
+        
+        if silence == False:
+            printWarning("WARNING: props filename is numbered", inspect.stack())
         return path + filename + "_" + str(i) + "." + extension
     else:
         return path + filename + "." + extension
@@ -259,9 +260,9 @@ def check_path_exists(path, flag_verbose = False):
     
     if verbose:
         if res:
-            print("  folder exists")
+            verbose("  folder exists", flag_verbose)
         else:
-            print("  folder does not exist")
+            verbose("  folder does not exist", flag_verbose)
         
     return res
 

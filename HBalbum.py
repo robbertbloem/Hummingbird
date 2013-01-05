@@ -53,7 +53,9 @@ class album(DC.ClassTools):
 
         self._album_path = HBFUN.check_path(album_path, verbose) 
                                         # path of the album   
-        self._default_source_path = HBFUN.check_path(default_source_path, verbose)  
+        self._default_source_path = HBFUN.check_path(default_source_path, verbose)
+          
+        self.events_csv_filename = "events"
                                         # default source of photos 
         self._pics_dir = "pics/"        # pictures
         self._thumbs_dir = "thumbs/"    # thumbs
@@ -191,6 +193,8 @@ class album(DC.ClassTools):
         if self.check_event_exists(event_title, event_dir, verbose):
             ev = HBEV.event(event_title, event_dir, event_dir_src, self.album_title, self.album_path, source_path, self.pics_dir, self.thumbs_dir, self.resources_dir, self.html_dir, verbose)
             self.event_array.insert(index, ev)
+        
+        self.save_events_in_csv(verbose)
         
         return True
 
@@ -352,7 +356,7 @@ class album(DC.ClassTools):
 
 
 
-    def set_folder_thumbnail(self, event_index, photo_index):
+    def set_folder_thumbnail(self, event_index, photo_index, verbose = False):
         """
         set_folder_thumbnail: change the thumbnail used for an event
         
@@ -368,13 +372,15 @@ class album(DC.ClassTools):
         """
         
         try:
-            print(event_index, photo_index)
+            HBFUN.verbose("set_folder_thumbnail, event: " + str(event_index) + " photo: " + str(photo_index), verbose)
             self.event_array[event_index].photo_array[photo_index]
         except IndexError:
             HBFUN.printError("Either the event_index or photo_index is incorrect", inspect.stack())
             return False
         
         self.event_array[event_index].event_thumb = photo_index
+
+        self.save_events_in_csv(verbose)
 
         return True
 
@@ -414,7 +420,7 @@ class album(DC.ClassTools):
         self.event_array[index].read_properties_list(verbose)
 
 
-    def save_events_in_csv(self, events_fn, verbose = False):
+    def save_events_in_csv(self, verbose = False):
         """
         
         
@@ -425,7 +431,7 @@ class album(DC.ClassTools):
         
         # create a save filename
         prop_ext = "txt"
-        path_and_filename = HBFUN.file_numbering(self.album_path + self.resources_dir, events_fn, prop_ext)
+        path_and_filename = HBFUN.file_numbering(self.album_path + self.resources_dir, self.events_csv_filename, prop_ext)
         
         # write the properties
         csvfile = open(path_and_filename, "wb")
@@ -435,7 +441,8 @@ class album(DC.ClassTools):
             csvwriter.writerow([i, ev.event_title, ev.event_dir, ev.event_dir_src, ev.source_path, ev.event_thumb])
         csvfile.close()
 
-    def load_events_from_csv(self, events_fn, verbose = False):
+
+    def load_events_from_csv(self, verbose = False):
         """
         
         
@@ -446,7 +453,7 @@ class album(DC.ClassTools):
         
         HBFUN.verbose("HBalbum/load_events_in_csv()", verbose)
         
-        path_and_filename = self.album_path + self.resources_dir + events_fn + ".txt"
+        path_and_filename = self.album_path + self.resources_dir + self.events_csv_filename + ".txt"
         csvfile = open(path_and_filename, "rb")
         csvreader = csv.reader(csvfile, delimiter=';')
         temp_ev_list = []

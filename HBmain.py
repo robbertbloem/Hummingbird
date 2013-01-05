@@ -43,7 +43,7 @@ def init_new_album(album_title, album_path, default_source_path, verbose):
         HBAL.save_album(album, pickle_path)
 
 
-def load_events_from_csv(events_csv_filename, pickle_path, verbose):
+def load_events_from_csv(pickle_path, verbose):
     """
     load_events_from_csv: should only be used if you had to re-init an album
     
@@ -57,37 +57,13 @@ def load_events_from_csv(events_csv_filename, pickle_path, verbose):
     HBFUN.verbose("load_events_from_csv", verbose)
     
     album = HBAL.load_album(pickle_path)
-    album.load_events_from_csv(events_csv_filename, verbose)
+    album.load_events_from_csv(verbose)
     HBAL.save_album(album, pickle_path)
     
-# 
-# def fill_album():
-#     """
-#     
-#     20130103/RB: started function
-#     
-#     """
-#     print("\nFill album")
-#     
-#     verbose = False
-# 
-#     album = HBAL.load_album(pickle_path)    
-#     album.add_event(0, "Fireworks (January 2013)", "20121231_fireworks", verbose = verbose)
-#     album.add_event(1, "Berlin (July 2012)", "20120720_berlin", verbose = verbose)
-#     album.add_event(2, "Lightning (August 2011)", "20110824_lightning", verbose = verbose)
-#     album.add_event(3, event_title = "Summer in Zurich (August 2011)", event_dir = "20110821_summer_zurich", event_dir_src = "20110821_summer_weekend", source_path = "", verbose = verbose)
-#     
-#     for i in range(4):
-#         print(album.event_array[i].event_dir_src)
-#         album.add_photos(i, flag_new_properties_list = False, flag_redo_resize = False, flag_redo_thumbs = False, verbose = verbose)
-#     
-#     HBAL.save_album(album, pickle_path)    
 
 
 
-
-
-def add_event(pickle_path, event_index, event_title, event_dir, event_dir_src = "", verbose):
+def add_event(pickle_path, event_index, event_title, event_dir, event_dir_src = "", source_path = "", verbose = False):
     """
     add_event: add an event to the album and add the photos to the event
     
@@ -104,8 +80,8 @@ def add_event(pickle_path, event_index, event_title, event_dir, event_dir_src = 
     HBFUN.verbose("Add event", verbose)
     
     album = HBAL.load_album(pickle_path)  
-    album.add_event(index, event_title, event_dir, event_dir_src, verbose)
-    album.add_photos(index, flag_new_properties_list = False, flag_redo_resize = False, flag_redo_thumbs = False, verbose = verbose)
+    album.add_event(event_index, event_title, event_dir, event_dir_src, source_path = source_path, verbose = verbose)
+    album.add_photos(event_index, flag_new_properties_list = False, flag_redo_resize = False, flag_redo_thumbs = False, verbose = verbose)
     HBAL.save_album(album, pickle_path)
 
 
@@ -156,21 +132,7 @@ def disable_photo(pickle_path, event_index, photo_index, disable, verbose = Fals
     HBAL.save_album(album, pickle_path)  
 
 
-# def add_photos():
-#     """
-#     
-#     20130103/RB: started function
-#     
-#     """
-#     
-#     index = 4
-# 
-#     album = HBAL.load_album(pickle_path)
-#     
-#     album.event_array[4].event_dir_src = "20110508a_party_alexander/"
-#     
-#     album.add_photos(index, flag_new_properties_list = False, flag_redo_resize = False, flag_redo_thumbs = False, verbose = True)
-#     HBAL.save_album(album, pickle_path)   
+
 
 
 def make_html(pickle_path, verbose):
@@ -206,7 +168,7 @@ def change_event_thumb(pickle_path, event_index, photo_index, verbose):
     HBAL.save_album(album, pickle_path)  
     
 
-def save_events_in_csv(pickle_path, events_csv_filename, verbose):
+def save_events_in_csv(pickle_path, verbose):
     """
     save_events_in_csv: if you want to specifically save a csv file... this is done automatically, so no real need to use this function
     
@@ -218,7 +180,7 @@ def save_events_in_csv(pickle_path, events_csv_filename, verbose):
     
     """
     album = HBAL.load_album(pickle_path)
-    album.save_events_in_csv(events_csv_filename, verbose = verbose)
+    album.save_events_in_csv(verbose)
 
 
 
@@ -226,35 +188,49 @@ if __name__ == "__main__":
     
     verbose = False
     
-    album_title = "Photos Robbert Bloem"
     album_path = "/Users/robbert/Pictures/Web/"
-    default_source_path = "/Users/robbert/Pictures/Photos/JPG/"
     pickle_path = album_path + "web.pickle"
-    events_csv_filename = "events"
     
+    # # # INIT # #
+    # album_title = "Photos Robbert Bloem"
+    # default_source_path = "/Users/robbert/Pictures/Photos/JPG/"
+    # 
+    # init_new_album(album_title, album_path, default_source_path, verbose)
+    # load_events_from_csv(pickle_path, verbose)
     
-    # # INIT # #
-    init_new_album(album_title, album_path, default_source_path, verbose)
-    load_events_from_csv(pickle_path, events_csv_filename, verbose)
+    # # # ADD EVENT # #
+    # event_index = 1
+    # event_title = "Christmas Lecture (December 2012)"
+    # event_dir = "20121219_christmas_lecture/"
+    # event_dir_src = "20121219_christmas_lecture/"
+    # source_path = ""
+    # 
+    # add_event(pickle_path, event_index, event_title, event_dir, event_dir_src, source_path, verbose)
+
+    # # # LIST EVENTS # #
+    # show_photos = True
+    # list_events(pickle_path, show_photos, verbose)
+
+    # # # DISABLE EVENT # #
+    # event_index = 0
+    # disable = True
+    # disable_event(pickle_path, event_index, disable, verbose)    
+
+    # # # DISABLE PHOTO # #
+    # event_index = 0
+    # photo_index = 0
+    # disable = True
+    # disable_photo(pickle_path, event_index, photo_index, disable, verbose)   
+
+    # # # CHANGE EVENT THUMB # #
+    # event_index = 0
+    # photo_index = 0
+    # change_event_thumb(pickle_path, event_index, photo_index, verbose)
+
+    # # MAKE HTML # #   
+    make_html(pickle_path, verbose)
     
-    
-    # fill_album()
-    
-    
-    index = 4
-    event_title = "Party Alexander (May 2011)"
-    event_dir = "20110508_party_alex/"
-    event_dir_src = "20110508a_party_alexander/"
-    
-    # add_event()
-    # disable_event()
-    # disable_photo()
-    # add_photos()
-    # list_events()
-    # change_folder_thumb()
-    # make_html()
-    
-    # save_events_in_csv(pickle_path)
+
     
     
     
