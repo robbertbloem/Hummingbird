@@ -3,7 +3,7 @@ HUMMINGBIRD - a script to organize photos and generate an html photo album
 HOW TO USE IT:
 
 The hierarchy of classes is: album > event > photo
-- HBmain contains all the functions you'll probably need. It can initialize an album, add events etc.
+- HBmain contains all the functions you'll probably need. It can initialize an album, add events etc. The functions are called from sing.py.
 - HBalbum has most functions in them and is used to interface with the events and photos
 - HBevent and HBphoto keep track of the stuff for these classes, but you shouldn't directly call them
 - HBfunctions contains some general functions.
@@ -34,3 +34,33 @@ res/*/props.txt: this file is intended to be modified. Here you can write the pr
 For both cases: the files are not overwritten but get assigned a number (events_1.txt). In both cases the file without number is used (events.txt). If you want to restore an album from another file, you have to manually rename them to events.txt. 
 The background is that usually you don't add photos to an event after you initially added them. Then you can give titles etc. Sometimes a new version is saved - even when no new photos are added (maybe mostly during testing) - and the script will still use the original version. If an occasional photo is added, you can manually correct the situation.
 events.txt should not really be necessary to use anyway. If something goes wrong, you're probably happy to rename a file instead of having to think what you need to import.
+
+
+WORKFLOW
+
+Start album:
+- run HBmain.init_new_album(..)
+
+Add new photos:
+- export photos from camera/lightroom to a folder, preferably one in the default_source_path:
+    - ~/Pictures/JPG/event/
+- run HBmain.add_event(..)
+- give the photos some titles in */res/event/props.txt
+- run HBmain.make_html()
+- upload the new folders to the server
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
