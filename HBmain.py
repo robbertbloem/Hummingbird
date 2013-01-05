@@ -1,3 +1,12 @@
+"""
+
+<O   /
+  WWW
+   |
+
+"""
+
+
 from __future__ import print_function
 from __future__ import division
 
@@ -181,7 +190,23 @@ def save_events_in_csv(pickle_path, verbose):
     album = HBAL.load_album(pickle_path)
     album.save_events_in_csv(verbose)
 
+def redo_resize_photos(pickle_path, event_index, redo_pics = False, redo_thumbs = False, verbose = False):
+    """
+    redo_resize_photos: if needed, you can redo the resizing of the photos.
+    
+    20130105/RB: started function
+    
+    INPUT:
+    - pickle_path
+    - event_index
+    - redo_pics
+    - redo_thumbs
+    
+    """
 
+    album = HBAL.load_album(pickle_path)
+    album.add_photos(event_index, flag_new_properties_list = False, flag_redo_resize = redo_pics, flag_redo_thumbs = redo_thumbs, verbose = verbose)
+    HBAL.save_album(album, pickle_path) 
 
 if __name__ == "__main__": 
 

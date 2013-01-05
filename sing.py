@@ -23,6 +23,13 @@ pickle_path = album_path + "web.pickle"
 # 
 # HBM.add_event(pickle_path, event_index, event_title, event_dir, event_dir_src, source_path, verbose)
 
+# # REDO RESIZING AND COPYING OF ORIGINALS # #
+event_index = 3
+redo_pics = False
+redo_thumbs = True
+HBM.redo_resize_photos(pickle_path, event_index, redo_pics = redo_pics, redo_thumbs = redo_thumbs, verbose = verbose)
+
+
 # # # LIST EVENTS # #
 # show_photos = True
 # HBM.list_events(pickle_path, show_photos, verbose)
@@ -43,6 +50,6 @@ pickle_path = album_path + "web.pickle"
 # photo_index = 11
 # HBM.change_event_thumb(pickle_path, event_index, photo_index, verbose)
 
-# # MAKE HTML # #   
-HBM.make_html(pickle_path, verbose)
+# # # MAKE HTML # #   
+# HBM.make_html(pickle_path, verbose)
 
