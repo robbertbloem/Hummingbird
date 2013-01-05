@@ -302,12 +302,14 @@ def make_html_gallery(f, gallery):
     f.write('<div id="content">\n')
     f.write('<table>\n')
 
+    # f.write('<div id="thumb">')
+
     for i in range(size):
         
         if i % n_cols == 0:
             f.write('<tr>\n') # make a new row
 
-        f.write('<td>\n')
+        f.write('<td class="thumb">\n')
         f.write('<a href="')
         f.write(gallery[i][0]) # link to event or photo
         f.write(r'"><img src="')
@@ -316,21 +318,22 @@ def make_html_gallery(f, gallery):
         f.write(gallery[i][0])
         f.write('" /><p>\n')
         f.write(gallery[i][2]) # title
-        f.write('</p></a>\n</td>\n')   
+        f.write('</p></a>\n</td>\n')     
 
-        # f.write('<td>\n  <div id="thumb">')
-        # f.write('<a href="')
-        # f.write(gallery[i][0]) # link to event or photo
-        # f.write(r'"><img src="')
-        # f.write(gallery[i][1]) # thumbnail 
-        # f.write('" alt="Link to ')
-        # f.write(gallery[i][0])
-        # f.write('" /><p>\n')
-        # f.write(gallery[i][2]) # title
-        # f.write('</p></a></div>\n</td>\n')   
-
-        if i % n_cols == n_cols - 1 or i == size - 1:
+        if i % n_cols == n_cols - 1:
             f.write('</tr>\n') # end a row
+    
+    # f.write('</div>')
+     
+    string = ""
+    cols_left = n_cols - size % n_cols
+    if cols_left != n_cols:
+        string = '<td></td>' * cols_left
+        string += '</tr>\n'
+    print("  " + string)
+    f.write(string)
+            
+            
 
     f.write('</table>\n')
     f.write('</div>\n') # end id=content
