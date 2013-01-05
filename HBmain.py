@@ -145,9 +145,8 @@ def make_html(pickle_path, verbose):
     HBFUN.verbose("Make html", verbose)
     
     album = HBAL.load_album(pickle_path)
-    HBHTML.make_html(album, verbose = verbose)
-
-
+    album = HBHTML.make_html(album, verbose = verbose)
+    HBAL.save_album(album, pickle_path) # to save the newly imported properties
 
 
 def change_event_thumb(pickle_path, event_index, photo_index, verbose):
@@ -222,10 +221,10 @@ if __name__ == "__main__":
     # disable = True
     # disable_photo(pickle_path, event_index, photo_index, disable, verbose)   
 
-    # # # CHANGE EVENT THUMB # #
-    # event_index = 0
-    # photo_index = 0
-    # change_event_thumb(pickle_path, event_index, photo_index, verbose)
+    # # CHANGE EVENT THUMB # #
+    event_index = 2
+    photo_index = 11
+    change_event_thumb(pickle_path, event_index, photo_index, verbose)
 
     # # MAKE HTML # #   
     make_html(pickle_path, verbose)

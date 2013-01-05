@@ -119,6 +119,7 @@ def make_html(album, verbose = False):
     
     HBFUN.verbose("make_html: Bye!", True)
 
+    return album
 
 
 def make_photo_html(f, photo):
