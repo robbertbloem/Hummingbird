@@ -12,23 +12,30 @@ import Hummingbird.HBfunctions as HBFUN
 
 reload(HBAL)
 
-album_path = "/Users/robbert/Pictures/Web/"
-default_source_path = "/Users/robbert/Pictures/Photos/JPG/"
-pickle_path = album_path + "web.pickle"
 
 
 
-def init_new_album():
+
+def init_new_album(album_title, album_path, default_source_path, verbose):
+    """
+    init_new_album: start or restart an album
     
-    print("\nInit new album")
+    20130103/RB: started function
+    
+    INPUT:
+    - album_title: title of the page (as seen on the web page)
+    - album_path: path to where the album is located on the computer
+    - default_source_path: the default path to the folder with the originals
+    
+    INTERACTION:
+    - the album will be saved. If it already exists it will ask for confirmation before it overwrites the old album.
+    """
+    HBFUN.verbose("== INIT NEW ALBUM ==", True)
     
     # make new album
-    album = HBAL.album(
-        album_title = "Photos Robbert Bloem", 
-        album_path = album_path, 
-        default_source_path = default_source_path,
-        verbose = True)
+    album = HBAL.album(album_title = album_title, album_path = album_path, default_source_path = default_source_path, verbose = verbose)
     
+    # save it, if it already exists, ask for confirmation
     if HBFUN.check_path_exists(pickle_path):
         if HBFUN.ask_user_confirmation("This will overwrite the old pickle. Destroy it? y/n"):
             HBAL.save_album(album, pickle_path)
@@ -36,105 +43,232 @@ def init_new_album():
         HBAL.save_album(album, pickle_path)
 
 
-
-
-def fill_album():
-    print("\nFill album")
+def load_events_from_csv(events_csv_filename, pickle_path, verbose):
+    """
+    load_events_from_csv: should only be used if you had to re-init an album
     
-    verbose = False
-
-    album = HBAL.load_album(pickle_path)    
-    album.add_event(0, "Fireworks (January 2013)", "20121231_fireworks", verbose = verbose)
-    album.add_event(1, "Berlin (July 2012)", "20120720_berlin", verbose = verbose)
-    album.add_event(2, "Lightning (August 2011)", "20110824_lightning", verbose = verbose)
-    album.add_event(3, event_title = "Summer in Zurich (August 2011)", event_dir = "20110821_summer_zurich", event_dir_src = "20110821_summer_weekend", source_path = "", verbose = verbose)
+    20130105/RB: started function
     
-    for i in range(4):
-        print(album.event_array[i].event_dir_src)
-        album.add_photos(i, flag_new_properties_list = False, flag_redo_resize = False, flag_redo_thumbs = False, verbose = verbose)
+    INPUT:
+    - events_csv_filename (str): the filename, without extension, of the csv file. Warning: save_file_in_csv will number filenames!
+    - pickle_path: path and filename of the pickle
     
-    HBAL.save_album(album, pickle_path)    
+    """
+    HBFUN.verbose("load_events_from_csv", verbose)
+    
+    album = HBAL.load_album(pickle_path)
+    album.load_events_from_csv(events_csv_filename, verbose)
+    HBAL.save_album(album, pickle_path)
+    
+# 
+# def fill_album():
+#     """
+#     
+#     20130103/RB: started function
+#     
+#     """
+#     print("\nFill album")
+#     
+#     verbose = False
+# 
+#     album = HBAL.load_album(pickle_path)    
+#     album.add_event(0, "Fireworks (January 2013)", "20121231_fireworks", verbose = verbose)
+#     album.add_event(1, "Berlin (July 2012)", "20120720_berlin", verbose = verbose)
+#     album.add_event(2, "Lightning (August 2011)", "20110824_lightning", verbose = verbose)
+#     album.add_event(3, event_title = "Summer in Zurich (August 2011)", event_dir = "20110821_summer_zurich", event_dir_src = "20110821_summer_weekend", source_path = "", verbose = verbose)
+#     
+#     for i in range(4):
+#         print(album.event_array[i].event_dir_src)
+#         album.add_photos(i, flag_new_properties_list = False, flag_redo_resize = False, flag_redo_thumbs = False, verbose = verbose)
+#     
+#     HBAL.save_album(album, pickle_path)    
 
 
 
 
 
-def add_event():
-    print("\nAdd event")
+def add_event(pickle_path, event_index, event_title, event_dir, event_dir_src = "", verbose):
+    """
+    add_event: add an event to the album and add the photos to the event
+    
+    20130103/RB: started function
+
+    INPUT:
+    - pickle_path (str): path and filename of the pickle
+    - index (int): position of the new album. Use 'list_events' to find the correct position. The newest event should have index = 0
+    - event_title (str): the title of the event. It usually has the format 'Some event (July 2012)'
+    - event_dir (str): the directory name of the event on the web
+    - event_dir_src (str, opt): if the source directory (with the original photos) has a different directory name
+    - source_path (str, opt): if the source_path of the original photos is not the default.   
+    """
+    HBFUN.verbose("Add event", verbose)
     
     album = HBAL.load_album(pickle_path)  
-    index = 4
-    event_title = "Party Alexander (May 2011)"
-    event_dir = "20110508_party_alex/"
-    event_dir_src = "20110508a_party_alexander/"
-    album.add_event(index, event_title, event_dir, event_dir_src, verbose = True)
+    album.add_event(index, event_title, event_dir, event_dir_src, verbose)
+    album.add_photos(index, flag_new_properties_list = False, flag_redo_resize = False, flag_redo_thumbs = False, verbose = verbose)
     HBAL.save_album(album, pickle_path)
 
 
-def list_events():
-    print("\nList events")
+def list_events(pickle_path, show_photos = False, verbose = False):
+    """
+    list_events: list events, and maybe also photos
+    
+    20130103/RB: started function
+    
+    INPUT:
+    - pickle_path (str): path and filename of the pickle
+    - show_photos (BOOL, False): if True, it will also list the photos 
+    """
+    HBFUN.verbose("List events", verbose)
     
     album = HBAL.load_album(pickle_path)    
     album.list_events(show_photos = True)
     
 
     
-def disable_event():
-    print("\nDisable event")
+def disable_event(pickle_path, event_index, disable, verbose = False):
+    """
+    disable_event: disable an event. This will exclude it from the events gallery, but it will not remove the html code itself
     
-    event_index = 2
-    disable = False
+    20130103/RB: started function
+
+    - event_index (int): index of the event in event_array. Use 'list_events' to find the correct index. If index is -1, it will affect all albums.
+    - disable (BOOL): True to disable, False to enable. If you try to re-disable an event, it will give a warning and continue    
+    """
+    HBFUN.verbose("Disable event", verbose)
     
     album = HBAL.load_album(pickle_path)
-    album.disable_event(index = event_index, disable = disable, verbose = True)
+    album.disable_event(index = event_index, disable = disable, verbose = verbose)
     HBAL.save_album(album, pickle_path)    
 
-def disable_photo():
-    print("\nDisable photo")
 
-    event_index = 4
-    photo_index = 4
-    disable = False
+def disable_photo(pickle_path, event_index, photo_index, disable, verbose = False):
+    """
+    disable_photo: see disable_event for info
+    
+    20130103/RB: started function
+    
+    """
+    HBFUN.verbose("Disable photo", verbose)
     
     album = HBAL.load_album(pickle_path)
     album.disable_photo(event_index, photo_index, disable, verbose = True)
     HBAL.save_album(album, pickle_path)  
 
 
-def add_photos():
-    
-    index = 4
+# def add_photos():
+#     """
+#     
+#     20130103/RB: started function
+#     
+#     """
+#     
+#     index = 4
+# 
+#     album = HBAL.load_album(pickle_path)
+#     
+#     album.event_array[4].event_dir_src = "20110508a_party_alexander/"
+#     
+#     album.add_photos(index, flag_new_properties_list = False, flag_redo_resize = False, flag_redo_thumbs = False, verbose = True)
+#     HBAL.save_album(album, pickle_path)   
 
-    album = HBAL.load_album(pickle_path)
-    
-    album.event_array[4].event_dir_src = "20110508a_party_alexander/"
-    
-    album.add_photos(index, flag_new_properties_list = False, flag_redo_resize = False, flag_redo_thumbs = False, verbose = True)
-    HBAL.save_album(album, pickle_path)   
 
-def make_html():
-    album = HBAL.load_album(pickle_path)
-    HBHTML.make_html(album, verbose = False)
+def make_html(pickle_path, verbose):
+    """
+    make_html: compile the html
     
-def change_folder_thumb():
-    event_index = 1
-    photo_index = 10
+    20130103/RB: started function
+    
+    """
+    HBFUN.verbose("Make html", verbose)
+    
+    album = HBAL.load_album(pickle_path)
+    HBHTML.make_html(album, verbose = verbose)
+
+
+
+
+def change_event_thumb(pickle_path, event_index, photo_index, verbose):
+    """
+    change_event_thumb: change the thumbnail used for the event
+    
+    20130103/RB: started function
+    
+    INPUT:
+    - event_index (int): a valid index of an event
+    - photo_index: a valid index of a photo
+    
+    """
+    HBFUN.verbose("Change event thumbnail", verbose)
     
     album = HBAL.load_album(pickle_path)
     album.set_folder_thumbnail(event_index, photo_index)
     HBAL.save_album(album, pickle_path)  
     
 
+def save_events_in_csv(pickle_path, events_csv_filename, verbose):
+    """
+    save_events_in_csv: if you want to specifically save a csv file... this is done automatically, so no real need to use this function
+    
+    20130105/RB: started function
+    
+    INPUT:
+    - pickle_path
+    - events_csv_filename (str): a filename, without extension, where the csv is saved. It will not overwrite older files, instead they will be numbered.
+    
+    """
+    album = HBAL.load_album(pickle_path)
+    album.save_events_in_csv(events_csv_filename, verbose = verbose)
+
+
 
 if __name__ == "__main__": 
-    # init_new_album()
+    
+    verbose = False
+    
+    album_title = "Photos Robbert Bloem"
+    album_path = "/Users/robbert/Pictures/Web/"
+    default_source_path = "/Users/robbert/Pictures/Photos/JPG/"
+    pickle_path = album_path + "web.pickle"
+    events_csv_filename = "events"
+    
+    
+    # # INIT # #
+    init_new_album(album_title, album_path, default_source_path, verbose)
+    load_events_from_csv(pickle_path, events_csv_filename, verbose)
+    
+    
     # fill_album()
+    
+    
+    index = 4
+    event_title = "Party Alexander (May 2011)"
+    event_dir = "20110508_party_alex/"
+    event_dir_src = "20110508a_party_alexander/"
+    
     # add_event()
     # disable_event()
-    disable_photo()
+    # disable_photo()
     # add_photos()
     # list_events()
     # change_folder_thumb()
     # make_html()
+    
+    # save_events_in_csv(pickle_path)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     

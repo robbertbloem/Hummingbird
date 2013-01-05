@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 import Hummingbird.DataClasses as DC
 import Hummingbird.HBfunctions as HBFUN
-import Hummingbird.HBphoto as HBPh
+import Hummingbird.HBphoto as HBPH
 
 class event(DC.ClassTools):
     """
@@ -222,7 +222,11 @@ class event(DC.ClassTools):
             ph = HBPH.photo(self.album_path, self.event_dir, photo_filename, exif)
             # add object to photo_array
             self.photo_array.append(ph)
-        
+
+
+
+
+    
         return True
 
 

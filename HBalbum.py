@@ -1,6 +1,7 @@
 from __future__ import print_function
 from __future__ import division
 
+import csv
 import inspect
 
 import numpy
@@ -63,7 +64,7 @@ class album(DC.ClassTools):
 
         self.make_folders(verbose)
         
-        return True
+        # return True
         
     # getters and setters to make sure the paths are correct
     @property
@@ -367,9 +368,10 @@ class album(DC.ClassTools):
         """
         
         try:
+            print(event_index, photo_index)
             self.event_array[event_index].photo_array[photo_index]
         except IndexError:
-            HBFUN.printError("Either the event_index or photo_index is incorrect", inpect.stack())
+            HBFUN.printError("Either the event_index or photo_index is incorrect", inspect.stack())
             return False
         
         self.event_array[event_index].event_thumb = photo_index
@@ -412,11 +414,63 @@ class album(DC.ClassTools):
         self.event_array[index].read_properties_list(verbose)
 
 
+    def save_events_in_csv(self, events_fn, verbose = False):
+        """
+        
+        
+        20130105/RB: started the function
+        
+        
+        """
+        
+        # create a save filename
+        prop_ext = "txt"
+        path_and_filename = HBFUN.file_numbering(self.album_path + self.resources_dir, events_fn, prop_ext)
+        
+        # write the properties
+        csvfile = open(path_and_filename, "wb")
+        csvwriter = csv.writer(csvfile, delimiter = ";")
+        for i in range(len(self.event_array)):
+            ev = self.event_array[i]
+            csvwriter.writerow([i, ev.event_title, ev.event_dir, ev.event_dir_src, ev.source_path, ev.event_thumb])
+        csvfile.close()
 
-
-
-
-
+    def load_events_from_csv(self, events_fn, verbose = False):
+        """
+        
+        
+        20130105/RB: started the function
+        
+        
+        """
+        
+        HBFUN.verbose("HBalbum/load_events_in_csv()", verbose)
+        
+        path_and_filename = self.album_path + self.resources_dir + events_fn + ".txt"
+        csvfile = open(path_and_filename, "rb")
+        csvreader = csv.reader(csvfile, delimiter=';')
+        temp_ev_list = []
+        for row in csvreader:
+            temp_ev_list.append(row)
+    
+        for i in range(len(temp_ev_list)):
+            self.add_event(
+                index = int(temp_ev_list[i][0]), 
+                event_title = temp_ev_list[i][1], 
+                event_dir = temp_ev_list[i][2], 
+                event_dir_src = temp_ev_list[i][3], 
+                source_path = temp_ev_list[i][4], 
+                verbose = verbose)
+            
+        for i in range(len(temp_ev_list)):
+            self.add_photos(
+                index = int(temp_ev_list[i][0]), 
+                flag_new_properties_list = False, 
+                flag_redo_resize = False, 
+                flag_redo_thumbs = False, 
+                verbose = verbose)
+            
+            self.set_folder_thumbnail(int(temp_ev_list[i][0]), int(temp_ev_list[i][5]))
 
 
 
