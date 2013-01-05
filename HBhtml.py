@@ -4,6 +4,9 @@ from __future__ import division
 import inspect
 import os
 
+import datetime
+import PyRSS2Gen
+
 import numpy
 import matplotlib 
 import matplotlib.pyplot as plt
@@ -134,14 +137,21 @@ def make_photo_html(f, photo):
     title = photo.photo_title
     caption = photo.photo_caption
     exif = parse_exif(photo.exif)
-
+    
+    if title == "":
+        alt_txt = photo.photo_filename
+    else:
+        alt_txt = title
+    
     f.write('<div id="photocontent">\n')
     f.write('<div id="photo">\n')
     f.write('<a href="')
     f.write(img_path)
     f.write('"><img src="')
     f.write(img_path)
-    f.write('" /></a>')
+    f.write(r'" alt="')
+    f.write(alt_txt)
+    f.write(r'" /></a>')
     f.write('</div>\n') # end id=photo
     f.write('<div id="phototitle">\n')
     f.write('  <p>')
@@ -185,11 +195,15 @@ def parse_exif(exif):
     string += "Aperture F" + str(exif['FNumber'][0] / exif['FNumber'][1]) + spacer
 
     string += "ISO: " + str(exif["ISOSpeedRatings"])
-
-    if exif['Copyright'] == "Robbert Bloem":
+    
+    try:
+        if exif['Copyright'] == "Robbert Bloem":
+            pass
+        else:
+            string += enter + "Copyright: " + exif['Copyright']
+    except KeyError:
         pass
-    else:
-        string += entter + "Copyright: " + exif['Copyright']
+        
 
     return string
 
@@ -211,6 +225,7 @@ def make_html_header(f, title, css_path = ""):
     f.write("<!DOCTYPE html>\n")
     f.write("<head>\n")
     f.write("<title>" + title + "</title>")
+    f.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />')
     f.write('<link rel="stylesheet" href="' + css_path + 'style.css">\n')
     f.write("</head>\n")
     f.write("<body>\n")
@@ -292,14 +307,27 @@ def make_html_gallery(f, gallery):
         if i % n_cols == 0:
             f.write('<tr>\n') # make a new row
 
-        f.write('<td>\n  <div id="thumb">')
+        f.write('<td>\n')
         f.write('<a href="')
         f.write(gallery[i][0]) # link to event or photo
         f.write(r'"><img src="')
         f.write(gallery[i][1]) # thumbnail 
+        f.write('" alt="Link to ')
+        f.write(gallery[i][0])
         f.write('" /><p>\n')
         f.write(gallery[i][2]) # title
-        f.write('</p></a></div>\n</td>\n')   
+        f.write('</p></a>\n</td>\n')   
+
+        # f.write('<td>\n  <div id="thumb">')
+        # f.write('<a href="')
+        # f.write(gallery[i][0]) # link to event or photo
+        # f.write(r'"><img src="')
+        # f.write(gallery[i][1]) # thumbnail 
+        # f.write('" alt="Link to ')
+        # f.write(gallery[i][0])
+        # f.write('" /><p>\n')
+        # f.write(gallery[i][2]) # title
+        # f.write('</p></a></div>\n</td>\n')   
 
         if i % n_cols == n_cols - 1 or i == size - 1:
             f.write('</tr>\n') # end a row
@@ -354,8 +382,56 @@ def prepare_event_gallery(event):
 
 
 
-
-
+def generate_rss(album):
+    """
+    generate rss: makes an rss file
+    
+    20130105/RB: function started
+    
+    REMARKS:
+    The way the 'pubDate' is constructed is sensitive to mistakes, it assumes the event_dir is yyyymmdd format.
+        
+    http://www.dalkescientific.com/Python/PyRSS2Gen.html
+    http://cyber.law.harvard.edu/rss/rss.html
+    
+    """
+    rss_items = []
+    
+    web_path = "http://www.robbert.org/photos/"
+    
+    for i in range(len(album.event_array)):
+    
+        ev = album.event_array[i]
+    
+        ev_link = web_path + "html/" + ev.event_dir + "index.html"
+    
+        thumb_index = ev.event_thumb
+        thumb_name = ev.photo_array[thumb_index].photo_filename
+        thumb_path = web_path + album.thumbs_dir + ev.event_dir + thumb_name
+    
+        description = "<img src='" + thumb_path + "' />"
+    
+        y = int(ev.event_dir[:4])
+        m = int(ev.event_dir[4:6])
+        d = int(ev.event_dir[6:8])
+            
+        rss_items.append(PyRSS2Gen.RSSItem(
+            title = ev.event_title,
+            link = ev_link,
+            description = description,
+            guid = PyRSS2Gen.Guid(ev_link),
+            pubDate = datetime.datetime(y, m, d, 0, 0)
+        ))
+    
+    rss = PyRSS2Gen.RSS2(
+        title = album.album_title,
+        link = web_path + "html/index.html",
+        description = album.album_title,
+        lastBuildDate = datetime.datetime.utcnow(),
+        items = rss_items
+    )
+    
+    rss.write_xml(open(album.album_path + "album.rss", "w"))
 
 
 

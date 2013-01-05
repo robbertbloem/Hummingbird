@@ -210,6 +210,12 @@ def redo_resize_photos(pickle_path, event_index, redo_pics = False, redo_thumbs 
 
 if __name__ == "__main__": 
 
+    # album_path = "/Users/robbert/Pictures/Web/"
+    # pickle_path = album_path + "web.pickle"
+    # 
+    # album = HBAL.load_album(pickle_path)
+    # HBHTML.generate_rss(album)
+
     pass
     
 
