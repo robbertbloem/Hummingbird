@@ -38,10 +38,10 @@ pickle_path = album_path + "web.pickle"
 # disable = True
 # HBM.disable_photo(pickle_path, event_index, photo_index, disable, verbose)   
 
-# # CHANGE EVENT THUMB # #
-event_index = 2
-photo_index = 11
-HBM.change_event_thumb(pickle_path, event_index, photo_index, verbose)
+# # # CHANGE EVENT THUMB # #
+# event_index = 2
+# photo_index = 11
+# HBM.change_event_thumb(pickle_path, event_index, photo_index, verbose)
 
 # # MAKE HTML # #   
 HBM.make_html(pickle_path, verbose)
