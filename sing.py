@@ -14,10 +14,10 @@ pickle_path = album_path + "web.pickle"
 # HBM.load_events_from_csv(pickle_path, verbose)
 
 # # # ADD EVENT # #
-# event_index = 12
-# event_title = "Spring in Zurich (April 2011)"
-# event_dir = "20110403_spring_zurich/"
-# event_dir_src = "20110403_spring_day/"
+# event_index = 0
+# event_title = "Grad School retreat (Januari 2013)"
+# event_dir = "20130127_grad_school_retreat/"
+# event_dir_src = "20130127_grad_school_retreat/"
 # source_path = ""
 # HBM.add_event(pickle_path, event_index, event_title, event_dir, event_dir_src, source_path, verbose)
 
@@ -43,9 +43,16 @@ pickle_path = album_path + "web.pickle"
 # disable = True
 # HBM.disable_photo(pickle_path, event_index, photo_index, disable, verbose)   
 
+
+# # # CHANGE EVENT TITLE # #
+# event_index = 0
+# new_title = "Grad School retreat (January 2013)"
+# HBM.change_event_title(pickle_path, event_index, new_title, verbose)
+
+
 # # # CHANGE EVENT THUMB # #
-# event_index = 12
-# photo_index = 9
+# event_index = 0
+# photo_index = 30
 # HBM.change_event_thumb(pickle_path, event_index, photo_index, verbose)
 
 # # MAKE HTML # #   

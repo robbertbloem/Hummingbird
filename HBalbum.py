@@ -480,8 +480,25 @@ class album(DC.ClassTools):
             self.set_folder_thumbnail(int(temp_ev_list[i][0]), int(temp_ev_list[i][5]))
 
 
-
+    def change_event_title(self, event_index, new_title, verbose = False):
+        """
+        change_event_title: change the title
+        
+        20130127/RB: wrote this function
+        
+        """
+        
+        HBFUN.verbose("HBalbum/change_event_title()", verbose)
  
-    
+        self.event_array[event_index].event_title = new_title
+        
+        return True
+        
+
+
+
+
+
+
     
     

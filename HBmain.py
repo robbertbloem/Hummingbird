@@ -174,7 +174,14 @@ def change_event_thumb(pickle_path, event_index, photo_index, verbose):
     album = HBAL.load_album(pickle_path)
     album.set_folder_thumbnail(event_index, photo_index)
     HBAL.save_album(album, pickle_path)  
+
+def change_event_title(pickle_path, event_index, new_title, verbose):
     
+    HBFUN.verbose("Change event title", verbose)
+    
+    album = HBAL.load_album(pickle_path)
+    album.change_event_title(event_index, new_title)
+    HBAL.save_album(album, pickle_path)    
 
 def save_events_in_csv(pickle_path, verbose):
     """

@@ -71,6 +71,8 @@ class event(DC.ClassTools):
         self.make_folders(verbose)
 
 
+
+
     def make_folders(self, verbose = False):
         """
         make_folders: create the event specific folders
@@ -302,7 +304,6 @@ class event(DC.ClassTools):
             # we assume the photos are in the same order...
             self.photo_array[i].photo_title = props_list[i][1]
             self.photo_array[i].photo_caption = props_list[i][2]
-
 
 
 

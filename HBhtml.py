@@ -23,6 +23,7 @@ def make_html(album, verbose = False):
     make_html: the do-all function to generate html
     
     20130103/RB: started the function
+    20130127/RB: generate RSS feed at end of this function
     
     INPUT:
     - album (HBAL.album)
@@ -119,6 +120,8 @@ def make_html(album, verbose = False):
                 make_html_footer(f)
                 
                 f.close()  
+    
+    generate_rss(album)
     
     HBFUN.verbose("make_html: Bye!", True)
 
