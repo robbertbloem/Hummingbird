@@ -82,6 +82,6 @@ def test_ask_user_confirmation():
     print(answer)
 
 if __name__ == "__main__": 
-    # test_check_path()
-    # test_check_path_exists()
-    test_ask_user_confirmation()
+    test_check_path()
+    test_check_path_exists()
+    # test_ask_user_confirmation()

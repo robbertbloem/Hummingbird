@@ -7,18 +7,10 @@ import os
 import datetime
 import PyRSS2Gen
 
-import numpy
-import matplotlib 
-import matplotlib.pyplot as plt
-
-
-import Hummingbird.DataClasses as DC
-import Hummingbird.HBalbum as HBAL
-import Hummingbird.HBevent as HBEV
-import Hummingbird.HBphoto as HBPH
 import Hummingbird.HBfunctions as HBFUN
+import PythonTools.Debug as DEBUG
 
-def make_html(album, verbose = False):
+def make_html(album, flag_verbose = False):
     """
     make_html: the do-all function to generate html
     
@@ -30,13 +22,13 @@ def make_html(album, verbose = False):
     
     """
     
-    HBFUN.verbose("make_html: Hi!", True)
+    DEBUG.verbose("make_html: Hi!", True)
     
     # some general strings
     no_nav = "" # value if there is no navigation element (first picture or so)
 
     # make album
-    HBFUN.verbose("  make album: " + album.album_title, verbose)
+    DEBUG.verbose("  make album: " + album.album_title, flag_verbose)
     
     f = open(album.album_path + album.html_dir + "index.html", "wb")
     make_html_header(f, album.album_title)
@@ -59,13 +51,13 @@ def make_html(album, verbose = False):
         ph_array = [n for n in ph_array if event.photo_array[n].disabled == False]
         
         if ph_array == []:
-            HBFUN.printWarning(event.event_title + " does not contain any photos or all photos are disabled. The event will be skipped!", inspect.stack())    
+            DEBUG.printWarning(event.event_title + " does not contain any photos or all photos are disabled. The event will be skipped!", inspect.stack())    
         
         else:
             
-            event.read_properties_list(verbose)
+            event.read_properties_list(flag_verbose)
             
-            HBFUN.verbose("    make event: " + event.event_title, verbose)
+            DEBUG.verbose("    make event: " + event.event_title, flag_verbose)
             
             f = open(album.album_path + album.html_dir + event.event_dir + "index.html", "wb")
             
@@ -95,7 +87,7 @@ def make_html(album, verbose = False):
 
                 photo = event.photo_array[j]  
 
-                HBFUN.verbose("      make photo: " + photo.photo_title, verbose)
+                DEBUG.verbose("      make photo: " + photo.photo_title, flag_verbose)
                 
                 f = open(album.album_path + album.html_dir + event.event_dir + photo.photo_html_name, "wb")      
                 
@@ -123,7 +115,7 @@ def make_html(album, verbose = False):
     
     generate_rss(album)
     
-    HBFUN.verbose("make_html: Bye!", True)
+    DEBUG.verbose("Finished making HTML!", True)
 
     return album
 

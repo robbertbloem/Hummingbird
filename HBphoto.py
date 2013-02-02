@@ -5,10 +5,11 @@ import numpy
 import matplotlib 
 import matplotlib.pyplot as plt
 
-import Hummingbird.DataClasses as DC
+# import Hummingbird.DataClasses as DC
+import PythonTools.ClassTools as CT
 import Hummingbird.HBfunctions as HBFun
 
-class photo(DC.ClassTools):
+class photo(CT.ClassTools):
 
     def __init__(self, album_path, event_dir, photo_filename, exif):
 

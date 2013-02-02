@@ -8,6 +8,8 @@ The hierarchy of classes is: album > event > photo
 - HBevent and HBphoto keep track of the stuff for these classes, but you shouldn't directly call them
 - HBfunctions contains some general functions.
 
+The package is dependent on PythonTools for saving the object, and for some debugging stuff.
+
 On disk, the hierarchy is:
 - album
     - pics

@@ -13,6 +13,8 @@ import numpy
 import matplotlib 
 import matplotlib.pyplot as plt
 
+import PythonTools.Debug as DEBUG
+
 def file_numbering(path, filename, extension, silence = True):
     """
     file_numbering: produces a unique filename
@@ -42,7 +44,7 @@ def file_numbering(path, filename, extension, silence = True):
             i += 1
         
         if silence == False:
-            printWarning("WARNING: props filename is numbered", inspect.stack())
+            DEBUG.printWarning("WARNING: props filename is numbered", inspect.stack())
         return path + filename + "_" + str(i) + "." + extension
     else:
         return path + filename + "." + extension
@@ -89,7 +91,7 @@ def make_jpg_html(name):
     elif name[-3:] == "jpg":
         return name[:-3] + "html"
     else: 
-        printError("Extension is not 'jpg' or 'jpeg'", inspect.stack())
+        DEBUG.printError("Extension is not 'jpg' or 'jpeg'", inspect.stack())
         return False
 
 
@@ -120,7 +122,7 @@ def resize_pics(source_path,
     
     """
     
-    verbose("HBfunctions.resize_pics(): from " + source_path + " to " + dest_path, True)
+    DEBUG.verbose("HBfunctions.resize_pics(): from " + source_path + " to " + dest_path, True)
 
     
     for FILE in source_to_pics_list:
@@ -144,7 +146,7 @@ def resize_pics(source_path,
             new_width = int(w/(h/max_pic_size))
             img = img.resize((new_width, new_height), Image.ANTIALIAS)   
 
-        verbose("resize: " + FILE + ", from: " + str(w) + "x" + str(h) + " to " + str(new_width) + "x" + str(new_height) + " (WxH)", flag_verbose)
+        DEBUG.verbose("resize: " + FILE + ", from: " + str(w) + "x" + str(h) + " to " + str(new_width) + "x" + str(new_height) + " (WxH)", flag_verbose)
         
         # save the result
         img.save(dest_file)
@@ -171,7 +173,7 @@ def make_thumbs(source_path,
     
     """
     
-    verbose("HBfunctions.resize_thumbs(): from " + source_path + " to " + dest_path, True)    
+    DEBUG.verbose("HBfunctions.resize_thumbs(): from " + source_path + " to " + dest_path, True)    
     
     for FILE in source_to_thumbs_list:
         
@@ -183,7 +185,7 @@ def make_thumbs(source_path,
         # determine current size of photo
         w, h = img.size
     
-        verbose("thumbs: " + FILE + ", width: " + str(w) + ", height: " + str(h), flag_verbose)
+        DEBUG.verbose("thumbs: " + FILE + ", width: " + str(w) + ", height: " + str(h), flag_verbose)
     
         if w > h: # landscape
             box = (int(w/2 - h/2), 0, int(w/2 + h/2), h)
@@ -256,15 +258,15 @@ def check_path_exists(path, flag_verbose = False):
  
     """
     
-    verbose("\nHBfunctions/check_folder_exists(): " + path, flag_verbose)
+    DEBUG.verbose("\nHBfunctions/check_folder_exists(): " + path, flag_verbose)
 
     res = os.access(path, os.F_OK)
     
-    if verbose:
+    if flag_verbose:
         if res:
-            verbose("  folder exists", flag_verbose)
+            DEBUG.verbose("  folder exists", flag_verbose)
         else:
-            verbose("  folder does not exist", flag_verbose)
+            DEBUG.verbose("  folder does not exist", flag_verbose)
         
     return res
 
@@ -286,9 +288,9 @@ def check_and_make_folder(path, flag_verbose = False):
     
     if os.access(path, os.F_OK) == False:
         os.mkdir(path)
-        verbose("  created folder", flag_verbose)
+        DEBUG.verbose("  created folder", flag_verbose)
     elif flag_verbose:
-        verbose("  folder existed", flag_verbose)
+        DEBUG.verbose("  folder existed", flag_verbose)
 
 
 
@@ -300,7 +302,7 @@ def check_path(path, flag_verbose = False):
     20130103: started the function
     
     """
-    verbose("\nHBfunctions/check_path(): " + path, flag_verbose)
+    DEBUG.verbose("\nHBfunctions/check_path(): " + path, flag_verbose)
     # check at beginning
     if path[:5] == "Users":
         path = "/" + path
@@ -309,69 +311,10 @@ def check_path(path, flag_verbose = False):
     # check the end
     if path[-1] != "/":
         path = path + "/"
-    verbose("  check_path> " + path, flag_verbose)
+    DEBUG.verbose("  check_path> " + path, flag_verbose)
     return path
         
  
-def printError(string, location = []):
-    """
-    printError: print an error in red.
-    
-    20130103: copied the function from croc
-    
-    INPUT:
-    - string (str): an error message
-    - location (inspect.stack(), opt): makes tracing the location of the error easier.
-    
-    """
-    
-    if location == []:
-        print("\033[1;31mERROR: " + string + "\033[1;m")
-    else:
-        print("\033[1;31mERROR (" + location[0][1] + ":" + location[0][3] + "): " + string + "\033[1;m")
-
-
-def printWarning(string, location = []):
-    """
-    printWarning: print a warning in purple.
-    
-    20130103: copied the function from croc
-    
-    INPUT:
-    - string (str): a warning message
-    - location (inspect.stack(), opt): makes tracing the location of the warning easier.
-    
-    """
-    
-    if location == []:
-        print("\033[1;35mWARNING: " + string + "\033[1;m")
-    else:
-        print("\033[1;35mWARNING (" + location[0][1] + "): " + string + "\033[1;m")
-
-
-
-def verbose(string, flag_verbose):
-    """
-    verbose: talk about the progress, in blue
-    
-    20130103: started the function
-    
-    INPUT:
-    - string (str): a message
-    - flag_verbose (BOOL): if False, don't print anything.
-
-    REMARK:
-    I was tired if all if-statements in the code, so I moved it in here.
-
-    """
-    
-    if flag_verbose:
-        print("\033[1;34m" + string + "\033[1;m")
-
-
-
-
-
 
 
 
