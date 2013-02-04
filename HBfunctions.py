@@ -15,36 +15,34 @@ import matplotlib.pyplot as plt
 
 import PythonTools.Debug as DEBUG
 
-def file_numbering(path, filename, extension, silence = True):
+def file_numbering(path, filename, extension, flag_verbose = False):
     """
     file_numbering: produces a unique filename
     
-    20130103: started the function
+    20130103/RB: started the function
+    20130202/RB: changed input 'silence' to 'flag_verbose', uses normal verbose to warn when filename is numbered. Added check for path.
     
     INPUT:
     - path (str): path
     - filename (str): filename
     - extension (str): extension
-    Note that filename should not end with a period, while the extenstion should not start with one.
     
     OUTPUT:
     - a unique path_and_filename
     
     """
-    
     if filename[-1] == ".":
         filename = filename[:-1]
     if extension[0] == ".":
         extension = extension[1:]
-
+    
+    path = check_path(path, flag_verbose)
 
     if os.access(path + filename + "." + extension, os.F_OK):
         i = 1
         while os.access(path + filename + "_" + str(i) + "." + extension, os.F_OK):
             i += 1
-        
-        if silence == False:
-            DEBUG.printWarning("WARNING: props filename is numbered", inspect.stack())
+        DEBUG.verbose("  filename is numbered", flag_verbose)
         return path + filename + "_" + str(i) + "." + extension
     else:
         return path + filename + "." + extension
